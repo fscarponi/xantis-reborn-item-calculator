@@ -17,18 +17,20 @@ export const ARMOR_CATEGORIES: ArmorCategory[] = [
 ];
 
 export const MATERIALS: Material[] = [
-  { name: 'Legno', precision: 1, damage: 0, hits: 0, threshold: 0, costMO: 1 },
-  { name: 'Cuoio', precision: 0, damage: 0, hits: 0, threshold: 0, costMO: 1 },
-  { name: 'Ferro', precision: 1, damage: 3, hits: 1, threshold: 5, costMO: 1 },
-  { name: 'Bronzo', precision: 2, damage: 2, hits: 1, threshold: 5, costMO: 1 },
-  { name: 'Acciaio', precision: 5, damage: 5, hits: 2, threshold: 9, costMO: 100 },
-  { name: 'Xama', precision: 4, damage: 3, hits: 3, threshold: 5, costMO: 150 },
-  { name: 'Settimo Metallo', precision: 7, damage: 5, hits: 4, threshold: 9, costMO: 1000 },
-  { name: 'Cristallo Nero', precision: 9, damage: 7, hits: 5, threshold: 10, costMO: 10000 },
-  { name: 'Portal', precision: 9, damage: 10, hits: 8, threshold: 11, costMO: 150000000 },
-  { name: 'Mithril', precision: 11, damage: 8, hits: 7, threshold: 10, costMO: 300000000 },
-  { name: 'Scaglie di Drago', precision: 12, damage: 12, hits: 10, threshold: 12, costMO: 2000000000 },
-  { name: 'Legno di Quercia', precision: 7, damage: 3, hits: 5, threshold: 6, costMO: 2000000000 },
+  { name: 'Legno', precision: 1, damage: 0, hits: 0, threshold: 0, costMO: 1, physicalDamageReduction: 0, magicalProtection: 1 },
+  { name: 'Cuoio', precision: 0, damage: 0, hits: 0, threshold: 0, costMO: 1, physicalDamageReduction: 0, magicalProtection: 0 },
+  { name: 'Ferro', precision: 1, damage: 3, hits: 1, threshold: 5, costMO: 1, physicalDamageReduction: 4, magicalProtection: 0 },
+  { name: 'Bronzo', precision: 2, damage: 2, hits: 1, threshold: 5, costMO: 1, physicalDamageReduction: 3, magicalProtection: 3 },
+  { name: 'Acciaio', precision: 5, damage: 5, hits: 2, threshold: 9, costMO: 100, physicalDamageReduction: 6,magicalProtection: 0 },
+  { name: 'Xama', precision: 4, damage: 3, hits: 3, threshold: 5, costMO: 150, physicalDamageReduction: 5, magicalProtection: 5 },
+  { name: 'Settimo Metallo', precision: 7, damage: 5, hits: 4, threshold: 9, costMO: 1000, physicalDamageReduction: 8, magicalProtection: 8 },
+  { name: 'Cristallo Nero', precision: 9, damage: 7, hits: 5, threshold: 10, costMO: 1000000, physicalDamageReduction: 10, magicalProtection: 8 },
+  { name: 'Cristallo Bianco', precision: 11, damage: 6, hits: 4, threshold: 9, costMO: 1000000, physicalDamageReduction: 8, magicalProtection: 10 },
+  { name: 'Portal', precision: 9, damage: 10, hits: 8, threshold: 11, costMO:  150000000,physicalDamageReduction: 18, magicalProtection: 14 },
+  { name: 'Mithril', precision: 11, damage: 8, hits: 7, threshold: 10, costMO: 300000000, physicalDamageReduction: 14, magicalProtection: 20 },
+  { name: 'Mithril&Portal', precision: 12, damage: 10, hits: 9, threshold: 11, costMO: 600000000, physicalDamageReduction: 20, magicalProtection: 20 },
+  { name: 'Scaglie di Drago', precision: 12, damage: 12, hits: 10, threshold: 12, costMO: 2000000000, physicalDamageReduction: 22, magicalProtection: 22 },
+  { name: 'Legno di Quercia', precision: 7, damage: 3, hits: 5, threshold: 6, costMO: 2000000000, physicalDamageReduction: 6, magicalProtection: 6 },
 ];
 
 export const NYRYL_MATERIAL: Material = {

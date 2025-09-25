@@ -1,3 +1,4 @@
+
 import type { CalculationResult } from './types';
 import { WEAPON_CATEGORIES, ARMOR_CATEGORIES, MATERIALS, NYRYL_MATERIAL, QUALITIES } from './data/gameData';
 
@@ -159,7 +160,8 @@ export const calculateItemStats = (params: CalculationParams): CalculationResult
     }
 
     // Add stats from the main material.
-    // Note: Materials typically don't add defensive stats in this ruleset, but `hits` and `threshold` are shared.
+    finalStats.physicalDamageReduction! += selectedMaterial.physicalDamageReduction || 0;
+    finalStats.magicalProtection! += selectedMaterial.magicalProtection || 0;
     finalStats.hits += selectedMaterial.hits;
     finalStats.threshold += selectedMaterial.threshold;
 
