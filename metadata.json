@@ -1,0 +1,5 @@
+{
+  "name": "GDR Item Calculator",
+  "description": "A web application to calculate the stats and costs of weapons for a tabletop RPG, based on a specific set of rules. Users can select weapon type, material, and quality to see the final attributes and price.",
+  "requestFramePermissions": []
+}
