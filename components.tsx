@@ -98,3 +98,59 @@ export const ToggleButton: React.FC<{ active: boolean; onClick: () => void; chil
       {children}
   </button>
 );
+
+/**
+ * A collapsible section displaying important notes and crafting rules.
+ */
+export const Disclaimer: React.FC = () => (
+  <details className="w-full max-w-4xl mx-auto mb-8 bg-slate-800/50 rounded-lg border border-slate-700/50 transition-all duration-300 open:shadow-lg">
+    <summary className="p-4 cursor-pointer text-lg font-semibold text-slate-300 hover:text-indigo-400 transition-colors list-none flex justify-between items-center">
+      <span>Note Importanti e Regole di Creazione</span>
+      <svg className="w-6 h-6 transform transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+      </svg>
+    </summary>
+    <div className="p-6 border-t border-slate-700/50 text-slate-400 space-y-6">
+      <div>
+        <h3 className="text-xl font-bold text-slate-200 mb-2">1. Costo di Costruzione vs. Costo di Vendita</h3>
+        <p>
+          Il calcolo mostra il costo di costruzione, non quello di vendita. Il prezzo finale di un oggetto varia notevolmente da baronato in baronato, di città in città e per diverse altre ragioni. L'oscillazione va da 1x (il venditore non ha guadagno e non viene pagato per il suo lavoro) fino a 10x (ricarico massimo).
+        </p>
+      </div>
+      <div>
+        <h3 className="text-xl font-bold text-slate-200 mb-2">2. Limiti di Qualità per Materiale</h3>
+        <p>Non tutti i materiali possono essere lavorati a tutte le qualità. In generale:</p>
+        <ul className="list-disc list-inside mt-2 space-y-1 pl-4">
+          <li><strong>Legno:</strong> fino a 'Alta Qualità'.</li>
+          <li><strong>Ferro, Bronzo:</strong> fino a 'Qualità Estrema'.</li>
+          <li><strong>Xama, Acciaio:</strong> fino a 'Qualità Leggendaria Grado 1'.</li>
+          <li><strong>Settimo Metallo, Cristallo Nero, Cristallo Bianco:</strong> fino a 'Qualità Divina Grado 1'.</li>
+          <li><strong>Mithril:</strong> fino a 'Enambre'.</li>
+          <li><strong>Portal:</strong> fino a 'Qualità Divina Grado 4'.</li>
+          <li><strong>Mithril&Portal:</strong> fino a 'Enambre'.</li>
+          <li><strong>Legno di Quercia:</strong> fino a '???'.</li>
+        </ul>
+        <p className="mt-4 p-3 bg-slate-700/50 rounded-md border border-slate-600 text-slate-300">
+          <strong>Nota su Nyryl:</strong> L'utilizzo di Nyryl permette di raggiungere fino a 5 livelli di qualità superiori al limite base del materiale.
+        </p>
+      </div>
+      <div>
+        <h3 className="text-xl font-bold text-slate-200 mb-2">3. Lore: La Maestra Armaiola</h3>
+        <p>
+          Nella storia, l'armaiola più forte di Xantis ha prodotto al massimo oggetti di una qualità fino a 'Enambre Grado 4'.
+        </p>
+      </div>
+    </div>
+    <style>{`
+      details > summary {
+        list-style: none;
+      }
+      details > summary::-webkit-details-marker {
+        display: none;
+      }
+      details[open] > summary svg {
+        transform: rotate(180deg);
+      }
+    `}</style>
+  </details>
+);

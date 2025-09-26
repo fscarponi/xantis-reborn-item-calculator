@@ -9,6 +9,7 @@ import {
   Select,
   NumberInput,
   ToggleButton,
+  Disclaimer,
 } from './components';
 
 /**
@@ -124,6 +125,8 @@ const App: React.FC = () => {
           </h1>
           <p className="text-slate-400 mt-2">Crea e calcola le statistiche dei tuoi oggetti personalizzati.</p>
         </header>
+
+        <Disclaimer />
 
         <main className="bg-slate-800 rounded-xl shadow-2xl p-6 md:p-8">
           {/* Toggle buttons to switch between Weapon and Armor calculators */}
