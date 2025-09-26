@@ -30,6 +30,16 @@ const App: React.FC = () => {
   // State to hold the final calculation result.
   const [result, setResult] = useState<CalculationResult | null>(null);
 
+  // State to hold the points distributed by the user.
+  const [distributedPoints, setDistributedPoints] = useState({
+    precision: 0,
+    damage: 0,
+    hits: 0,
+    threshold: 0,
+    physicalDamageReduction: 0,
+    magicalProtection: 0,
+  });
+
   // Determine which categories to show based on the calculator type.
   const categories = calculatorType === 'weapon' ? WEAPON_CATEGORIES : ARMOR_CATEGORIES;
 
@@ -109,10 +119,80 @@ const App: React.FC = () => {
     // Updates the state with the new result.
     if (calculationResult) {
       setResult(calculationResult);
+      // Reset distributed points for the new item
+      setDistributedPoints({
+        precision: 0,
+        damage: 0,
+        hits: 0,
+        threshold: 0,
+        physicalDamageReduction: 0,
+        magicalProtection: 0,
+      });
     } else {
       // If the calculation returns null (due to invalid input), alert the user.
       alert("Per favore, compila tutti i campi correttamente.");
     }
+  };
+
+  /**
+   * Handles increasing or decreasing a stat by distributing quality points.
+   * @param stat The name of the stat to change.
+   * @param amount The amount to change by (+1 or -1).
+   */
+  const handlePointChange = (stat: keyof typeof distributedPoints, amount: number) => {
+    if (!result) return;
+
+    setDistributedPoints(prev => {
+      const totalDistributed = Object.values(prev).reduce((sum, val) => sum + val, 0);
+      const remainingPoints = result.distributablePoints - totalDistributed;
+      const currentPointsOnStat = prev[stat];
+      
+      // Do not add points if none are left
+      if (amount > 0 && remainingPoints <= 0) {
+        return prev;
+      }
+      // Do not remove points that haven't been added
+      if (amount < 0 && currentPointsOnStat <= 0) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        [stat]: currentPointsOnStat + amount,
+      };
+    });
+  };
+
+  /**
+   * Handles the automatic distribution of quality points based on a weighted priority.
+   * Primary stats get points at a 2:1 ratio compared to secondary stats.
+   */
+  const handleAutoDistribute = () => {
+    if (!result || result.distributablePoints <= 0) return;
+
+    // Reset points before distributing
+    const newPoints = {
+      precision: 0,
+      damage: 0,
+      hits: 0,
+      threshold: 0,
+      physicalDamageReduction: 0,
+      magicalProtection: 0,
+    };
+
+    const pointsToDistribute = result.distributablePoints;
+
+    // Define the weighted distribution order. Primary stats appear twice for every single appearance of secondary stats.
+    const distributionPool = calculatorType === 'weapon'
+      ? ['precision', 'damage', 'precision', 'damage', 'hits', 'threshold']
+      : ['physicalDamageReduction', 'magicalProtection', 'physicalDamageReduction', 'magicalProtection', 'hits', 'threshold'];
+
+    for (let i = 0; i < pointsToDistribute; i++) {
+      const statToIncrement = distributionPool[i % distributionPool.length] as keyof typeof newPoints;
+      newPoints[statToIncrement]++;
+    }
+
+    setDistributedPoints(newPoints);
   };
 
 
@@ -192,7 +272,14 @@ const App: React.FC = () => {
         </main>
         
         {/* Render results if available */}
-        {result && <ResultsDisplay result={result} />}
+        {result && (
+          <ResultsDisplay
+            result={result}
+            distributedPoints={distributedPoints}
+            onPointChange={handlePointChange}
+            onAutoDistribute={handleAutoDistribute}
+          />
+        )}
       </div>
 
       <footer className="text-center mt-12 text-slate-500 text-sm">

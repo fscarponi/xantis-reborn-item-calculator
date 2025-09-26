@@ -4,62 +4,176 @@ import type { CalculationResult } from './types';
 
 /**
  * Displays a single statistic with a label, value, and an icon.
+ * Now includes optional controls for increasing/decreasing the stat value.
  */
-export const StatDisplay: React.FC<{ label: string; value: string | number; icon: React.ReactNode }> = ({ label, value, icon }) => (
+export const StatDisplay: React.FC<{
+  label: string;
+  value: string | number;
+  bonus?: number;
+  icon: React.ReactNode;
+  onIncrease?: () => void;
+  onDecrease?: () => void;
+  canIncrease?: boolean;
+  canDecrease?: boolean;
+}> = ({ label, value, bonus, icon, onIncrease, onDecrease, canIncrease, canDecrease }) => (
   <div className="flex flex-col items-center justify-center p-4 bg-slate-700/50 rounded-lg shadow-md text-center">
-    <div className="flex items-center justify-center w-12 h-12 mb-3 rounded-full bg-slate-800 text-indigo-400">
+    <div className="flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-slate-800 text-indigo-400">
       {icon}
     </div>
-    <span className="text-sm font-medium text-slate-400">{label}</span>
-    <span className="text-2xl font-bold text-slate-100">{value}</span>
+    <span className="text-sm font-medium text-slate-400 h-5">{label}</span>
+    <div className="flex items-center justify-center gap-2 mt-1 min-h-[28px]">
+      {onDecrease ? (
+        <button
+          onClick={onDecrease}
+          disabled={!canDecrease}
+          className="w-7 h-7 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xl flex items-center justify-center disabled:bg-slate-600 disabled:cursor-not-allowed transition-colors leading-none"
+          aria-label={`Diminuisci ${label}`}
+        >
+          -
+        </button>
+      ) : <div className="w-7 h-7" /> /* Placeholder for alignment */}
+      <span className="text-2xl font-bold text-slate-100 tabular-nums w-12 text-center">
+        {value}
+      </span>
+      {onIncrease ? (
+        <button
+          onClick={onIncrease}
+          disabled={!canIncrease}
+          className="w-7 h-7 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xl flex items-center justify-center disabled:bg-slate-600 disabled:cursor-not-allowed transition-colors leading-none"
+          aria-label={`Aumenta ${label}`}
+        >
+          +
+        </button>
+      ) : <div className="w-7 h-7" /> /* Placeholder for alignment */}
+    </div>
+    <div className="h-5 pt-1 text-sm text-green-400 font-semibold">
+      {bonus !== undefined && bonus > 0 && `+${bonus}`}
+    </div>
   </div>
 );
+
 
 /**
  * Displays the full set of calculated results, including stats, costs, and any penalties.
  */
-export const ResultsDisplay: React.FC<{ result: CalculationResult }> = ({ result }) => (
-  <div className="w-full max-w-4xl p-6 mt-8 bg-slate-800 rounded-xl shadow-2xl">
-    <h2 className="text-3xl font-bold text-center text-indigo-400 mb-6">Risultati del Calcolo</h2>
-    
-    <div className="mb-6">
-      <h3 className="text-xl font-semibold mb-4 text-slate-300">Statistiche Finali</h3>
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        {/* Weapon-specific stats */}
-        {result.stats.precision !== undefined && <StatDisplay label="Precisione" value={result.stats.precision} icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>} />}
-        {result.stats.damage !== undefined && <StatDisplay label="Danno" value={result.stats.damage} icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>} />}
-        
-        {/* Armor-specific stats */}
-        {result.stats.physicalDamageReduction !== undefined && <StatDisplay label="Rid. Danno Fisico" value={result.stats.physicalDamageReduction} icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>} />}
-        {result.stats.magicalProtection !== undefined && <StatDisplay label="Prot. Magica" value={result.stats.magicalProtection} icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>} />}
-        
-        {/* Shared stats */}
-        <StatDisplay label="Colpi" value={result.stats.hits} icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>} />
-        <StatDisplay label="Soglia" value={result.stats.threshold} icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>} />
-        {result.stats.baseWeight !== undefined && <StatDisplay label="Peso" value={result.stats.baseWeight} icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4-8-4m16 0v10l-8 4-8-4V7" /></svg>} />}
-      </div>
-    </div>
-    
-    {/* Display penalty if it exists */}
-    {result.penalty && (
-      <div className="mt-6 p-4 bg-red-900/50 border border-red-700/50 rounded-lg text-center">
-        <h3 className="font-semibold text-red-300">Note Speciali / Penalità</h3>
-        <p className="text-red-400">{result.penalty}</p>
-      </div>
-    )}
+export const ResultsDisplay: React.FC<{
+  result: CalculationResult;
+  distributedPoints: { [key: string]: number };
+  onPointChange: (stat: string, amount: number) => void;
+  onAutoDistribute: () => void;
+}> = ({ result, distributedPoints, onPointChange, onAutoDistribute }) => {
 
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mt-6">
-        <div className="p-4 bg-slate-700/50 rounded-lg">
-            <h3 className="font-semibold text-slate-400">Punti Qualità da Distribuire</h3>
-            <p className="text-4xl font-bold text-green-400">{result.distributablePoints}</p>
+  const totalDistributed = Object.values(distributedPoints).reduce((sum, val) => sum + val, 0);
+  const remainingPoints = result.distributablePoints - totalDistributed;
+  const canIncrease = remainingPoints > 0;
+
+  return (
+    <div className="w-full max-w-4xl p-6 mt-8 bg-slate-800 rounded-xl shadow-2xl">
+      <h2 className="text-3xl font-bold text-center text-indigo-400 mb-6">Risultati del Calcolo</h2>
+      
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold mb-4 text-slate-300">Statistiche Finali</h3>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {/* Weapon-specific stats */}
+          {result.stats.precision !== undefined && <StatDisplay 
+            label="Precisione" 
+            value={(result.stats.precision || 0) + (distributedPoints.precision || 0)}
+            bonus={distributedPoints.precision}
+            icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>}
+            onIncrease={() => onPointChange('precision', 1)}
+            onDecrease={() => onPointChange('precision', -1)}
+            canIncrease={canIncrease}
+            canDecrease={(distributedPoints.precision || 0) > 0}
+          />}
+          {result.stats.damage !== undefined && <StatDisplay 
+            label="Danno" 
+            value={(result.stats.damage || 0) + (distributedPoints.damage || 0)}
+            bonus={distributedPoints.damage}
+            icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>}
+            onIncrease={() => onPointChange('damage', 1)}
+            onDecrease={() => onPointChange('damage', -1)}
+            canIncrease={canIncrease}
+            canDecrease={(distributedPoints.damage || 0) > 0}
+          />}
+          
+          {/* Armor-specific stats */}
+          {result.stats.physicalDamageReduction !== undefined && <StatDisplay 
+            label="Rid. Danno Fisico" 
+            value={(result.stats.physicalDamageReduction || 0) + (distributedPoints.physicalDamageReduction || 0)}
+            bonus={distributedPoints.physicalDamageReduction}
+            icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>}
+            onIncrease={() => onPointChange('physicalDamageReduction', 1)}
+            onDecrease={() => onPointChange('physicalDamageReduction', -1)}
+            canIncrease={canIncrease}
+            canDecrease={(distributedPoints.physicalDamageReduction || 0) > 0}
+          />}
+          {result.stats.magicalProtection !== undefined && <StatDisplay 
+            label="Prot. Magica" 
+            value={(result.stats.magicalProtection || 0) + (distributedPoints.magicalProtection || 0)}
+            bonus={distributedPoints.magicalProtection}
+            icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>}
+            onIncrease={() => onPointChange('magicalProtection', 1)}
+            onDecrease={() => onPointChange('magicalProtection', -1)}
+            canIncrease={canIncrease}
+            canDecrease={(distributedPoints.magicalProtection || 0) > 0}
+          />}
+          
+          {/* Shared stats */}
+          <StatDisplay 
+            label="Colpi" 
+            value={result.stats.hits + (distributedPoints.hits || 0)}
+            bonus={distributedPoints.hits}
+            icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>}
+            onIncrease={() => onPointChange('hits', 1)}
+            onDecrease={() => onPointChange('hits', -1)}
+            canIncrease={canIncrease}
+            canDecrease={(distributedPoints.hits || 0) > 0}
+          />
+          <StatDisplay 
+            label="Soglia" 
+            value={result.stats.threshold + (distributedPoints.threshold || 0)}
+            bonus={distributedPoints.threshold}
+            icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>}
+            onIncrease={() => onPointChange('threshold', 1)}
+            onDecrease={() => onPointChange('threshold', -1)}
+            canIncrease={canIncrease}
+            canDecrease={(distributedPoints.threshold || 0) > 0}
+          />
+          {result.stats.baseWeight !== undefined && <StatDisplay label="Peso" value={result.stats.baseWeight} icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4-8-4m16 0v10l-8 4-8-4V7" /></svg>} />}
         </div>
-        <div className="p-4 bg-slate-700/50 rounded-lg md:col-span-2">
-            <h3 className="font-semibold text-slate-400">Costo Totale</h3>
-            <p className="text-4xl font-bold text-yellow-400">{result.cost}</p>
+      </div>
+      
+      {/* Display penalty if it exists */}
+      {result.penalty && (
+        <div className="mt-6 p-4 bg-red-900/50 border border-red-700/50 rounded-lg text-center">
+          <h3 className="font-semibold text-red-300">Note Speciali / Penalità</h3>
+          <p className="text-red-400">{result.penalty}</p>
         </div>
+      )}
+  
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mt-6">
+          <div className="p-4 bg-slate-700/50 rounded-lg flex flex-col justify-between">
+              <div>
+                <h3 className="font-semibold text-slate-400">Punti Qualità da Distribuire</h3>
+                <p className="text-4xl font-bold text-green-400 my-2">{remainingPoints}</p>
+              </div>
+              {result.distributablePoints > 0 && (
+                <button
+                  onClick={onAutoDistribute}
+                  className="w-full mt-auto px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                >
+                  Distribuzione Automatica
+                </button>
+              )}
+          </div>
+          <div className="p-4 bg-slate-700/50 rounded-lg md:col-span-2 flex flex-col justify-center">
+              <h3 className="font-semibold text-slate-400">Costo Totale</h3>
+              <p className="text-4xl font-bold text-yellow-400">{result.cost}</p>
+          </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 /**
  * A wrapper for a form input field that includes a label.
