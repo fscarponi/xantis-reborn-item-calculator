@@ -25,7 +25,7 @@ const App: React.FC = () => {
   const [material, setMaterial] = useState<string>(MATERIALS[0].name);
   const [quality, setQuality] = useState<string>(QUALITIES[0].name);
   const [useNyryl, setUseNyryl] = useState<boolean>(false);
-  const [weight, setWeight] = useState<number>(1);
+  const [weight, setWeight] = useState<string>('1'); // Use string for free input
 
   // State to hold the final calculation result.
   const [result, setResult] = useState<CalculationResult | null>(null);
@@ -95,14 +95,20 @@ const App: React.FC = () => {
                 defaultWeight = 1;
         }
     }
-    setWeight(defaultWeight);
+    setWeight(defaultWeight.toString());
   }, [category, calculatorType]);
 
-
   /**
-   * Handles the calculation logic when the user clicks the "Calculate" button.
+   * Effect hook to automatically calculate stats when any input changes.
    */
-  const handleCalculate = () => {
+  useEffect(() => {
+    // Validate weight before calculation
+    const parsedWeight = parseInt(weight, 10);
+    if (isNaN(parsedWeight) || parsedWeight < 1) {
+      setResult(null);
+      return;
+    }
+
     // Gathers all state into a parameters object.
     const params = {
       calculatorType,
@@ -110,7 +116,7 @@ const App: React.FC = () => {
       materialName: material,
       qualityName: quality,
       useNyryl,
-      weight
+      weight: parsedWeight
     };
 
     // Calls the dedicated calculation function.
@@ -129,10 +135,9 @@ const App: React.FC = () => {
         magicalProtection: 0,
       });
     } else {
-      // If the calculation returns null (due to invalid input), alert the user.
-      alert("Per favore, compila tutti i campi correttamente.");
+      setResult(null);
     }
-  };
+  }, [calculatorType, category, material, quality, useNyryl, weight]);
 
   /**
    * Handles increasing or decreasing a stat by distributing quality points.
@@ -236,7 +241,7 @@ const App: React.FC = () => {
             </InputGroup>
 
             <InputGroup label="Moltiplicatore Peso/Dimensione">
-                <NumberInput value={weight} onChange={(e) => setWeight(Math.max(1, parseInt(e.target.value) || 1))} min="1" />
+                <NumberInput value={weight} onChange={(e) => setWeight(e.target.value)} min="1" />
             </InputGroup>
           </div>
 
@@ -260,15 +265,6 @@ const App: React.FC = () => {
             `}</style>
           </div>
           
-          {/* Calculate Button */}
-          <div className="flex justify-center">
-            <button
-              onClick={handleCalculate}
-              className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-lg shadow-indigo-500/20 transform hover:scale-105 transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50"
-            >
-              Calcola Statistiche e Costo
-            </button>
-          </div>
         </main>
         
         {/* Render results if available */}
