@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import type { CalculationResult } from './types';
 import { WEAPON_CATEGORIES, ARMOR_CATEGORIES, MATERIALS, QUALITIES } from './data/gameData';
@@ -205,7 +204,7 @@ const App: React.FC = () => {
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-slate-900">
       <div className="w-full max-w-4xl">
         <header className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-indigo-400">
+          <h1 className="text-4xl md:text-5xl font-bold text-indigo-400 font-serif">
             GDR Item Calculator
           </h1>
           <p className="text-slate-400 mt-2">Crea e calcola le statistiche dei tuoi oggetti personalizzati.</p>
